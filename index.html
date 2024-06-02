@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: orange;
+            color: black;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .weather-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .weather-info span {
+            font-size: 18px;
+        }
+        .weather-icon {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <div class="weather-info" id="weather-info">
+            <span>Loading...</span>
+        </div>
+    </div>
+    <script>
+        const apiKey = '8368f183567407fba3fdbc913afddfdc'; // Replace with your OpenWeatherMap API key
+
+        function fetchWeatherData(city) {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updateWeatherInfo(data);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    document.getElementById('weather-info').innerHTML = 'Error fetching weather data.';
+                });
+        }
+
+        function updateWeatherInfo(data) {
+            const weatherInfo = document.getElementById('weather-info');
+            const weatherHTML = `
+                <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}.png" alt="Weather Icon" class="weather-icon">
+                <span>${data.weather[0].main}</span>
+                <span>${Math.round(data.main.temp - 273.15)}°C</span>
+                <span>${data.main.humidity}% Humidity</span>
+                <p>Chennai's Weather</p>
+            `;
+            weatherInfo.innerHTML = weatherHTML;
+        }
+
+        const cityName = 'Chennai'; // Change this to the desired city name
+        fetchWeatherData(cityName);
+    </script>
+</body>
+</html>
